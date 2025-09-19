@@ -11,7 +11,6 @@ import java.util.List;
 ///  </summary>
 public class PiDigits {
 
-    private static final int THREADS = 2;
     private static final List<PiDigitsThread> THREADS_LIST = new ArrayList<>();
     private static int DigitsPerSum = 8;
 
@@ -22,7 +21,8 @@ public class PiDigits {
      * @param count The number of digits to return
      * @return An array containing the hexadecimal digits.
      */
-    public static byte[] getDigits(int start, int count) throws InterruptedException {
+    public static byte[] getDigits(int nThreads, int start, int count) throws InterruptedException {
+
         if (start < 0) {
             throw new RuntimeException("Invalid Interval");
         }
@@ -32,7 +32,7 @@ public class PiDigits {
         }
 
         // Tamaño de cada intervalo de digitos. Debe ser multiplo de DigitsPerSum
-        int size = (count - start) / THREADS;
+        int size = (count - start) / nThreads;
         // System.out.println("size: " + size);
         while (size % DigitsPerSum != 0) {
             size += 1;
@@ -41,12 +41,12 @@ public class PiDigits {
 
         byte[] digits = new byte[count];
         PiDigitsThread.digits = digits;
-        for (int i = 0; i < THREADS; i++) {
+        for (int i = 0; i < nThreads; i++) {
             // Ejemplo de n = 100;
             // Para 2 hilos 0 - 49 / 50 - 99
             // 0 - 31 / 32 - 63 / 64 - 95 / 96 - 99
             PiDigitsThread thread;
-            if (i == (THREADS - 1)) {
+            if (i == (nThreads - 1)) {
                 thread = new PiDigitsThread(i * size, count - (i * size));
             } else {
                 thread = new PiDigitsThread(i * size, size);

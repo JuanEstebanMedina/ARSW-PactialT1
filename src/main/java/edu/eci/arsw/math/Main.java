@@ -14,11 +14,11 @@ public class Main {
     public static void main(String a[]) {
         try {
             System.out.println("Test1");
-            System.out.println(bytesToHex(PiDigits.getDigits(0, 10)));
+            System.out.println(bytesToHex(PiDigits.getDigits(2, 0, 10)));
             System.out.println("Test2");
-            System.out.println(bytesToHex(PiDigits.getDigits(1, 100)));
+            System.out.println(bytesToHex(PiDigits.getDigits(4, 1, 100)));
             // System.out.println("Test3");
-            // System.out.println(bytesToHex(PiDigits.getDigits(1, 1000000)));
+            // System.out.println(bytesToHex(PiDigits.getDigits(2, 1, 1000000)));
         } catch (InterruptedException e) {
             System.err.println("ERROR");
         }
