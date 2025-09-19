@@ -5,6 +5,8 @@
  */
 package edu.eci.arsw.math;
 
+import java.io.IOException;
+
 /**
  *
  * @author hcadavid
@@ -17,11 +19,13 @@ public class Main {
             System.out.println(bytesToHex(PiDigits.getDigits(2, 0, 10)));
             System.out.println("Test2");
             System.out.println(bytesToHex(PiDigits.getDigits(4, 1, 100)));
-            // System.out.println("Test3");
-            // System.out.println(bytesToHex(PiDigits.getDigits(2, 1, 1000000)));
+            System.out.println("Test3");
+            System.out.println(bytesToHex(PiDigits.getDigits(10, 1, 1000000)));
         } catch (InterruptedException e) {
             System.err.println("ERROR");
-        }
+        } catch (IOException e ){
+            System.err.println("ERROR");
+        } 
     }
 
     private final static char[] hexArray = "0123456789ABCDEF".toCharArray();

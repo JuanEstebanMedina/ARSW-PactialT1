@@ -1,5 +1,6 @@
 package edu.eci.arsw.math;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class PiDigits {
      * @param count The number of digits to return
      * @return An array containing the hexadecimal digits.
      */
-    public static byte[] getDigits(int nThreads, int start, int count) throws InterruptedException {
+    public static byte[] getDigits(int nThreads, int start, int count) throws InterruptedException, IOException {
 
         if (start < 0) {
             throw new RuntimeException("Invalid Interval");
@@ -55,6 +56,22 @@ public class PiDigits {
             thread.start();
         }
 
+        Thread.sleep(5000);
+
+        int processedDigits = 0;
+        for (PiDigitsThread thread : THREADS_LIST) {
+            thread.setPaused();
+            processedDigits += thread.getProcessedDigits();
+        }
+
+        System.out.println("Digitos procesados: " + processedDigits + "\n Enter to continue ");
+        System.in.read();
+
+        for (PiDigitsThread thread : THREADS_LIST) {
+            thread.setResume();
+            processedDigits += thread.getProcessedDigits();
+        }
+        
         for (PiDigitsThread thread : THREADS_LIST) {
             thread.join();
         }

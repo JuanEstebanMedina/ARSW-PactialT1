@@ -3,21 +3,27 @@ package edu.eci.arsw.math;
 public class PiDigitsThread extends Thread {
 
     private static int DigitsPerSum = 8;
-    private static double Epsilon = 1e-17;
-
+    private static final double Epsilon = 1e-17;
     public static byte[] digits;
+
+    private volatile boolean isPaused = false;
+    private int processedDigits = 0;
     private int start;
     private int count;
 
     public PiDigitsThread(int start, int count) {
-        System.err.println("Thread Start & Count: " + start + "  " + count);
+        // System.err.println("Thread Start & Count: " + start + "  " + count);
         this.start = start;
         this.count = count;
     }
 
     @Override
     public void run() {
-        getDigits();
+        try {
+            getDigits();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -27,12 +33,16 @@ public class PiDigitsThread extends Thread {
      * @param count The number of digits to return
      * @return An array containing the hexadecimal digits.
      */
-    public void getDigits() {
+    public void getDigits() throws InterruptedException {
 
         double sum = 0;
         int end = (start + count);
         for (int i = start; i < end; i++) {
-            // System.out.println("mod de: " + i + " resultado:" + (i % DigitsPerSum));
+            synchronized (this) {
+                while (isPaused) {
+                    wait();
+                }
+            }
             if (i % DigitsPerSum == 0) {
                 sum = 4 * sum(1, start)
                         - 2 * sum(4, start)
@@ -44,7 +54,23 @@ public class PiDigitsThread extends Thread {
 
             sum = 16 * (sum - Math.floor(sum));
             digits[i] = (byte) sum;
+            processedDigits++;
+            // System.out.println("mod de: " + i + " resultado:" + (i % DigitsPerSum));
+
         }
+    }
+
+    public synchronized void setPaused(){
+        isPaused = true;
+    }
+
+    public synchronized void setResume(){
+        isPaused = false;
+        notifyAll();
+    }
+
+    public int getProcessedDigits(){
+        return processedDigits;
     }
 
     private double sum(int m, int n) {
